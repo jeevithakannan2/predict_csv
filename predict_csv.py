@@ -4,10 +4,11 @@ from joblib import load
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 
 def load_model(model_dir):
-
     model_path = os.path.join(model_dir, 'model.joblib')
     model = load(model_path)
     return model
@@ -101,7 +102,7 @@ def process_csv(input_file, output_file, model_dir):
 
         # Add values on top of the bars
         for i, count in enumerate(df_brand['Count']):
-            plt.text(i, count+0.5, str(count), ha='center', va='bottom', rotation=90)
+            plt.text(i, count + 0.5, str(count), ha='center', va='bottom', rotation=90)
 
         # Adjust the x-axis limits to remove the gap on either side
         plt.xlim(-0.5, len(df_brand) - 0.5)
@@ -143,7 +144,7 @@ def process_csv(input_file, output_file, model_dir):
         # Adjust the y-axis limits to provide more space at the top
         plt.ylim(0, max(df_gender['Count']) + 50)
 
-        plt.savefig(os.path.join(plot_dir,'gender_plot.png'), dpi=300)
+        plt.savefig(os.path.join(plot_dir, 'gender_plot.png'), dpi=300)
         plt.show()
 
         # Calculate the count of each unique color
@@ -173,26 +174,26 @@ def process_csv(input_file, output_file, model_dir):
         for i, count in enumerate(df_color['Count']):
             plt.text(i, count + 2, str(count), ha='center', va='bottom', rotation=90)
 
-        # Adjust the x-axis limits to remove the gap on either side
-        plt.xlim(-0.5, len(df_color) - 0.5)
-
         # Adjust the y-axis limits to provide more space at the top
         plt.ylim(0, max(df_color['Count']) + 30)
 
-        plt.savefig(os.path.join(plot_dir,'color_plot.png'), dpi=300)
+        plt.savefig(os.path.join(plot_dir, 'color_plot.png'), dpi=300)
         plt.show()
 
 
-def main():
-    # Specify the model version and directory
-    model_version = 2
-    model_dir = os.path.join('models', f'v{model_version}')
+# Specify the model version and directory
+model_version = 2
+model_dir = os.path.join('models', f'v{model_version}')
 
-    # Specify the input and output file paths
-    input_file = 'data/test.csv'
-    output_file = 'output.csv'
+# Open a Tkinter file dialog to select the input file
+Tk().withdraw()
+input_file = askopenfilename(title='Select Input CSV File', filetypes=[('CSV Files', '*.csv')])
 
-    # Process the CSV file and generate predictions
-    process_csv(input_file, output_file, model_dir)
+# Open a Tkinter file dialog to select the output file
+output_file = asksaveasfilename(title='Save Output CSV File', defaultextension='.csv', filetypes=[('CSV Files', '*.csv')])
 
-    print("Predictions saved to output.csv")
+# Process the CSV file and generate predictions
+process_csv(input_file, output_file, model_dir)
+
+print("Predictions saved to output.csv")
+
